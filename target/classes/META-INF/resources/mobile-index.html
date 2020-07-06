@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>文件管理系统</title>
+	<link rel='stylesheet' href='bootstrap/css/bootstrap.min.css'/>
+	<link rel="stylesheet" href="layui/css/layui.css">
+	<script src="js/jquery.min.js"></script>
+	<script src='bootstrap/js/bootstrap.min.js'></script>
+	<script src="layui/layui.js"></script>
+	<script src="js/jquery.cookie.js"></script>
+	<style>
+		body
+		{
+			background-color:#E6E6FA;
+			background-attachment:fixed;
+			background-position:top;
+			margin:0;
+		}
+		.top{
+			background-color: #f2f2f2;
+			height: 150px;
+		}
+		.top_title{
+			font-size: 40px;
+			padding:0;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			line-height:150px;
+		}
+		.home:after
+		{
+			content:"";
+			clear:both;
+			display:table;
+		}
+		.column
+		{
+			padding:10px 0;
+			background-color:#93D1FF;
+			text-align: center;
+
+		}
+		.left_con{
+			float:left;
+			width: 50%;
+
+
+
+		}
+		.right_con{
+			float:right;
+			width: 50%;
+
+
+		}
+		.home{
+			text-align: center;
+		}
+		.header{
+			/* text-align: center; */
+		}
+		.line_nam{
+			position: revert;
+			float: top;
+			height: 100px;
+			font-weight: 900;
+		}
+
+
+		button{
+			box-sizing: border-box;
+			background:none;
+			font-size: 50px;
+			font-style: inherit;
+			font-family: '微软雅黑';
+			text-align: center;
+			border:0;
+			width: 350px;
+		}
+		button.device{
+			box-sizing: border-box;
+			height: 350px;
+			border-radius: 50px;
+			font-weight: 500;
+			background-color: #40AFFE;
+		}
+		button.bearing{
+			height: 100px;
+			border-radius: 50px;
+			font-weight: 500;
+			background-color: #40AFFE;
+		}
+		#codeButton{
+			box-sizing: border-box;
+			width: 100%;
+			height: 100px;
+		}
+	</style>
+</head>
+<body>
+<button id="codeButton">扫码</button>
+<div id="association">
+	<!--第一条线容器-->
+	<div class='left_con column'>
+		<div  id="lineContainer1"></div>
+		<div class="panel-group" id="collapseParents1">
+
+		</div>
+	</div>
+
+	<!--第二条线容器-->
+	<div class='right_con column'>
+		<div  id="lineContainer2"></div>
+		<div class="panel-group" id="collapseParents2">
+
+		</div>
+
+	</div>
+</div>
+<script>
+	$(function () {
+		$.get(
+				'/dis/line/getDeviceByLine',
+				{},
+				function (res) {
+			var lineContainer= res.data;
+
+			//第一条线
+			// console.log(lineContainer);
+			var lineContainer1 = lineContainer[0];
+			// console.log(lineContainer1);
+			var deviceList1 = lineContainer[0].deviceList;
+			// console.log(deviceList1);
+
+			//第一条线拼接
+			$("#lineContainer1").append(
+					'<button type="text" class="line_nam">' + lineContainer1.lineName + '</button>'
+			);
+
+			//第一条线下的设备拼接
+			var processAppend1='';
+			$.each(deviceList1,function(k){
+				processAppend1 += '<div class="panel panel-default">\n';
+				processAppend1 += '<button data-toggle="collapse" id=' +  deviceList1[k].id  + '  name=' +  deviceList1[k].proline_id  + ' class="device" data-parent="#collapseParents1" href=' + '#' + deviceList1[k].id + 'x' + ' onclick="getType(id,name)">' + deviceList1[k].process_name + '</button>';
+				processAppend1 += '<div id=' + deviceList1[k].id + 'x' + ' class="panel-collapse collapse">';
+				processAppend1 += '<div class="panel-body box"></div>';
+				processAppend1 += '</div></div>'
+			});
+			$('#collapseParents1').append(processAppend1);
+			// 判断第二条线是否存在，存在就拼接第二条线
+			if(res.data.length >1){
+				var lineContainer2 = lineContainer[1];
+				var deviceList2 = lineContainer[1].deviceList;
+
+				//第二条线拼接
+				$("#lineContainer2").append(
+						'<button type="text" class="line_nam" >' + lineContainer2.lineName + '</button>'
+				);
+
+				//第二条线下的设备拼接
+				var processAppend2='';
+				$.each(deviceList2,function(k){
+					processAppend2 += '<div class="panel panel-default">\n';
+					processAppend2 += '<button data-toggle="collapse" id=' +  deviceList2[k].id  + '  name=' +  deviceList2[k].proline_id  + ' class="device" data-parent="#collapseParents2" href=' + '#' + deviceList2[k].id + 'x' + ' onclick="getType(id,name)">' + deviceList2[k].process_name + '</button>';
+					processAppend2 += '<div id=' + deviceList2[k].id + 'x' + ' class="panel-collapse collapse">';
+					processAppend2 += '<div class="panel-body box"></div>';
+					processAppend2 += '</div></div>'
+				});
+				$('#collapseParents2').append(processAppend2);
+			}
+		});
+
+	});
+
+
+	function getType(id,name) {
+
+		//移除之前拼接
+		$('.box button,br').remove();
+		// console.log(id,name);
+		$.get('/dis/line/getModelByProLine',{lineId:name,deviceId:id},function (res) {     //给我当前线位的工序的正生产的型号
+			var berType = res.data;
+			// console.log(berType);
+
+			//型号拼接
+			var berAppend = "";
+			$.each(berType,function(k){
+				berAppend +='<br/>' ;
+				berAppend +='<button  class="bearing" name=' + berType[k].id + ',' + berType[k].did  +','+ berType[k].lineId +' onclick="openCarousel(this)">' + berType[k].type + '</button>';
+				berAppend +='<br/>' ;
+			});
+			// var cla = $(this).attr('class');
+			// console.log(berType.)
+			$('.box').append(berAppend)
+		})
+	}
+
+
+		// var layer = layui.layer;
+		//点击型号发送请求到新的页面并将数据传递过去
+		//每个设备下的型号数据的获取
+		function openCarousel(data){
+
+			layui.use('layer', function(){
+				var layer = layui.layer;
+				//清除本地原来的cookie
+				$.removeCookie('berId');
+				$.removeCookie('dId');
+				$.removeCookie('lineId');
+				var cla = data.name;
+				// console.log(cla);
+				var cla1 = cla.split(',');
+				// console.log(cla1);
+				// console.log(cla1[0],cla1[1],cla1[2]);
+
+				//重新定义cookie
+				$.cookie('berId',cla1[0]);
+				$.cookie('dId',cla1[1]);
+				$.cookie('lineId',cla1[2]);
+				var dId = $.cookie(dId);     // 读取 cookie
+				window.location.href = "mobile-carousel.html";
+				// console.log(dId);
+				// layer.open({
+				// 	type: 2,
+				// 	title: '查看文件',
+				// 	// shadeClose: true,
+				// 	shade: 0,
+				// 	area: ['100vw', '94vh'],
+				// 	content: '/dis/mobile-carousel.html' //iframe的url
+				// });
+
+
+
+			});
+
+		}
+
+	// if(window.history && window.history.pushState) {
+	// 	$(window).on('popstate', function() {
+	// 		var hashLocation = location.hash;
+	// 		var hashSplit = hashLocation.split("#!/");
+	// 		var hashName = hashSplit[1];
+	// 		if(hashName !== '') {
+	// 			var hash = window.location.hash;
+	// 			if(hash === '') {
+	// 				alert("你点击了返回键");
+	// 				// layer.closeAll();
+	// 			}
+	// 		}
+	// 	});
+	// 	// window.history.pushState('forward', null, './#forward');
+	// }
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="/dis/js/jquery.easyui.min.js"></script>
+		<script src="/dis/js/jquery.min.js"></script>
+		<script type="text/javascript">
+			$(function () {
+				f();
+			})
+			function f() {
+				$('#dg').datagrid({
+					url: '/idea/select',
+					/*queryParams: {
+						supplier: supplier,
+						company: company,
+						company_id: company_id,
+						type: type,
+						months: months,
+						year: year
+					},*/
+					fit: false,
+					fitColumns: true,
+					columns: [[
+						{field: 'content', title: '内容'},
+						{field: 'opponent', title: '意见人'},
+						{field: 'subtime', title: '提交时间'},
+						{field: 'resolve', title: '是否解决'},
+
+					]],
+					onLoadSuccess: function () {
+
+					}
+				})
+			}
+		</script>
+	</head>
+	<body>
+		<div id="dg">
+			
+		</div>
+
+			<div style="width:800px;margin:10px auto">
+			<form id="upload-form" action="/dis/idea/import" enctype="multipart/form-data" method="post" >
+				<p>意见内容：</p>
+				<textarea style="width:500px;height:150px" name="content"></textarea><br/>
+				<input type="file" name="excelFile"  id="upload-form1" multiple="multiple"/>
+				<input type="submit" value="导入excel"/>
+			</form>
+		</div>
+	</body>
+</html>

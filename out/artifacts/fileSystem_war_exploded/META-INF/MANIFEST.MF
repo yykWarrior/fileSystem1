@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Created-By: IntelliJ IDEA
+Built-By: yyk
+Build-Jdk: 1.8.0_221
+Implementation-Version: 1.0-SNAPSHOT
+Implementation-Vendor-Id: com.rb.fs
+Main-Class: ${start-class}
+

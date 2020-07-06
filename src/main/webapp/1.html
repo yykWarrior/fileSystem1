@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>实现数组求最大值</title>
+</head>
+<body>
+<div>
+    <p><inputn type="submit" onclick="a()"/>点击</p>
+    <p>最大值<input id="a" type="text"></p>
+    <p>位置<input id="b" type="text"></p>
+</div>
+<script type="text/javascript">
+    function a() {
+        var arr = [10,2,98,5,27,97,31];  //定义一个数组
+        var result=0;
+        var index=0;
+        for(var i=0;i<arr.length;i++){
+            if(arr[i]>result){
+                result=arr[i];
+                index=arr[i].indexOf();
+            }
+        }
+        document.getElementById("a").value = result;
+        document.getElementById("b").value = index;
+    }
+
+</script>
+</body>
+</html>

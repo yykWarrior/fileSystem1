@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html ><!--manifest="demo_html.appcache"-->
+<head>
+  <meta charset="utf-8">
+  <title>登录</title>
+  <link rel="shortcut icon" href="image/C&U.jpg" type="image/x-icon">
+  <link rel="stylesheet" href="css/homestyle.css">
+  <link rel="stylesheet" href="layui/css/layui.css">
+  <script src="js/jquery.min.js"></script>
+<!--  <script src="layui-v2.5.5/layui/layui.all.js"></script>-->
+  <script src="layui/layui.js"></script>
+<!--  <script type="text/javascript" src="js/jquery.min.js"></script>-->
+  <style>
+
+    body
+    {
+      background-color:#E6E6FA;
+      background-image:url(image/background.jpg);
+      background-size:1920px 1080px;
+      background-attachment:fixed;
+      background-position:top;
+    }
+    body
+    {
+      margin:0;
+    }
+    input[type=text], select
+    {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    input[type=password], select
+    {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    input[type=submit]
+    {
+
+      width: 25%;
+      flaot:center;
+      background-color:  #2196F3;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    input[type=reset]
+    {
+
+      width: 25%;
+      flaot:center;
+      background-color:  #2196F3;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    input[type=submit]:hover
+    {
+      background-color: #45a049;
+    }
+    input[type=reset]:hover
+    {
+      background-color: #45a049;
+    }
+    div.header
+    {
+      list-style-type: none;
+      border-radius: 5px;
+      padding: 20px;
+    }
+    .header ul
+    {
+      list-style-type:none;
+      margin:0;
+      padding:0;
+    }
+    .header ul li
+    {float:right;}
+    .about li
+    {
+      float: right;
+      background-color: #2196F3;
+      color: white;
+      padding: 15px 18px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+    }
+
+    div.center {
+      margin: auto;
+      height: 100%;
+      padding:8%;
+    }
+    div.article
+    {
+      border-radius: 5px;
+      margin:auto;
+      width:40%;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+    p {
+      opacity:0.2;
+      font-family:"隶书";
+      font-size:50px;
+      font-weight:bold;
+    }
+    .language
+    {
+      position:relative;
+      float:right;
+      display:inline-block;
+    }
+    .language-content
+    {
+      right:0;
+      display:none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    }
+    .language-content a
+    {
+      color: black;
+      padding: 15px 18px;
+      text-decoration: none;
+      display: block;
+    }
+    .language:hover .language-content
+    {
+      display:block;
+    }
+    .chi:hover,.eng:hover
+    {
+      background-color:#C0C0C0;
+      color:white;
+      border-radius:5px;
+    }
+  </style>
+
+  <script>
+    function login() {
+      var role=$("#role").val();
+      var name=$("#account").val();
+      var password=$("#password").val();
+      $.ajax({
+        url: "/dis/user/doLogin",
+        type: "POST",
+        data: {"username":name,"password":password,"role":role},
+        //async: false,
+        dataType: "json",
+        async:true,
+        success: function (data) {
+          if(data.data=='1'&&data.retCode=='200'){
+            window.location.href="/dis/index.html";
+          }else if(data.retCode=='200'){
+            window.location.href="/dis/mobile-index.html";
+          }else{
+            // layer.msg(data.message);
+          /*  alert(data.message)*/
+          }
+
+          /* alert(data.retCode)
+           alert(data.data)*/
+
+        }
+      })
+    }
+  </script>
+  <script>
+    function beChinese()
+    {
+      document.getElementById("title").innerHTML="现场文件发放,回收管理系统"
+      document.getElementById("lan").innerHTML="语言";
+      document.getElementById("ro").innerHTML="角色";
+      document.getElementById("ac").innerHTML="账号";
+      document.getElementById("pa").innerHTML="密码";
+      document.getElementById("ad").innerHTML="管理员";
+      document.getElementById("st").innerHTML="普通员工";
+      document.getElementById("submit").value="登录";
+      document.getElementById("reset").value="重置";
+      document.getElementById("ab").innerHTML="关于";
+      document.getElementById("account").placeholder="请输入账号";
+      document.getElementById("password").placeholder="请输入密码";
+    }
+    function beEnglish()
+    {
+      document.getElementById("title").innerHTML="Site document release, recovery management system";
+      document.getElementById("lan").innerHTML="Language";
+      document.getElementById("ro").innerHTML="Role";
+      document.getElementById("ac").innerHTML="Account number";
+      document.getElementById("pa").innerHTML="Password";
+      document.getElementById("ad").innerHTML="Administrator";
+      document.getElementById("st").innerHTML="General staff";
+      document.getElementById("submit").value="enter";
+      document.getElementById("reset").value="reset";
+      document.getElementById("ab").innerHTML="intro";
+      document.getElementById("account").placeholder="Please enter account number";
+      document.getElementById("password").placeholder="Please enter password";
+    }
+  </script>
+</head>
+<body>
+<div  class="header" id="header">
+  <p id="title" align="center">现场文件发放,回收管理系统</p>
+  <form class="about">
+    <ul>
+      <li>
+        <div class="language">
+          <span id="lan">语言</span>
+          <div class="language-content">
+            <a class="chi" onclick="beChinese()">简体中文</a>
+            <a class="eng" onclick="beEnglish()">English</a>
+          </div>
+        </div>
+      </li>
+      <li><a id="ab" style="color:white;text-decoration:none;" href="/dis/illutrate.html">关于</a></li>
+    </ul>
+  </form>
+</div>
+<div class="center" style="widht:100%;">
+  <div class="article">
+    <!--<form action="/C:/Users/谭力文/Desktop/现场文件发放、回收管理/管理员界面.html">-->
+    <label id="ro" for="role">角色</label>
+    <select id="role" name="role">               <!--  修改了id、name	-->
+      <option id="ad" value="1">管理员</option>    <!--  修改了value -->
+      <option id="st" value="2">普通员工</option>   <!-- 修改了value -->
+    </select>
+    <label id="ac" for="account">账号</label>                                       <!--  修改了for -->
+    <input type="text" id="account" name="account" placeholder="请输入账号">   <!--  修改了id -->
+    <label id="pa" for="password">密码</label>                                          <!--  修改了for -->
+    <input type="password" id="password" name="password" placeholder="请输入密码">  <!--  修改了id -->
+    <input id="submit" type="submit" value="登录" onclick="login()"/>&nbsp;&nbsp;<input id="reset" type="reset" value="重置"/>  <!--  修改了for -->
+
+    <!-- </form>-->
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+锁分类
+https://www.cnblogs.com/qifengshi/p/6831055.html
+集合
+https://blog.csdn.net/zhangqunshuai/article/details/80660974
+https://blog.csdn.net/qq_37345604/article/details/80252509
+spring
+https://blog.csdn.net/qq_22583741/article/details/79589910
+aop原理
+https://www.jianshu.com/p/5cfe2db57382
+https://www.cnblogs.com/leifei/p/8263448.html
+https://blog.csdn.net/zpf336/article/details/82751925
+
+springmvc
+https://blog.csdn.net/a745233700/article/details/80963758
+https://www.jianshu.com/p/e18fd44964eb
+
+redis
+https://www.cnblogs.com/pankypan/category/1486925.html
+
+
+shiro与springboot项目结合时发现注解无效
+解决办法
+ /**
+     * 开启Shiro的注解(如@RequiresRoles,@RequiresPermissions),需借助SpringAOP扫描使用Shiro注解的类,并在必要时进行安全逻辑验证
+     * 配置以下两个bean(DefaultAdvisorAutoProxyCreator(可选)和AuthorizationAttributeSourceAdvisor)即可实现此功能
+     * @return
+     */
+    @Bean
+    @DependsOn({ "lifecycleBeanPostProcessor" })
+    public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
+        DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+        advisorAutoProxyCreator.setProxyTargetClass(true);
+        return advisorAutoProxyCreator;
+    }
+
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor() {
+        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
+        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager());
+        return authorizationAttributeSourceAdvisor;
+    }
+
+
+springboot项目搭建
+https://baijiahao.baidu.com/s?id=1608301601154521261&wfr=spider&for=pc
+
+mysql数据库安装
+https://blog.csdn.net/lala12d/article/details/82743875
+https://www.php.cn/mysql-tutorials-354965.html
+
+windows系统查看端口
+cmd 下 输入 netstat -ano 来查看本机开的的端口 列出所有端口的情况
+
+然后可以根据 netstat -aon|findstr “49157” 填写 端口号 查询这个端口进程的PID
+
+然后根据 PID 查询 是哪个程序或软件开启或占用这个 端口 tasklist|findstr “2720” 这个填写PID
+然后打印出来的信息就是那个软件的名字
+
+关于String的解析
+https://blog.csdn.net/Android1974/article/details/89454941
+
+pgsql下载
+https://www.enterprisedb.com/thank-you-downloading-postgresql?anid=1257099
+
+{"message":"鎴愬姛","retCode":200,"data":""}

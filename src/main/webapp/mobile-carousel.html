@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>文件管理系统</title>
+  <link rel="shortcut icon" type="image/x-icon" href="image/C&U.jpg" />
+  <!--    <link rel="stylesheet" href="css/homestyle.css">-->
+  <link rel="stylesheet" href="layui/css/layui.css">
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+  <!--    <script src="js/jquery.min.js"></script>-->
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="layui/layui.js"></script>
+<!--  <script src="js/jquery.media.js"></script>-->
+  <script src="bootstrap/js/bootstrap.js"></script>
+  <style>
+    /*.allContentContainer{*/
+    /*  position: relative;*/
+    /*  !*text-align: center;*!*/
+    /*}*/
+    .setContainer{
+      box-sizing: border-box;
+      position: fixed;
+      top:5.5%;
+      /*left: 40%;*/
+      padding: 0;
+      margin:0;
+      z-index: 1;
+      width: 60px;
+      height: 100px;
+    }
+    #set{
+      position: fixed;
+      /*background-color: #1E9FFF;*/
+      top:50%;
+      z-index:1;
+      font-family: '微软雅黑';
+      font-weight: 900;
+    }
+  </style>
+
+
+
+</head>
+<body>
+
+<!--设置按钮-->
+<button class="layui-btn layui-btn-normal setContainer" style="z-index: 10" data-toggle="collapse" href="#set">播放设置</button>
+
+<!--设置内容-->
+<div class="panel-collapse collapse" id="set" style="z-index: 10;">
+  <div class="layui-form" class="panel-body" >
+<!--    <div class="layui-form-item">-->
+<!--      <div class="layui-inline">-->
+<!--        <label class="layui-form-label">宽高</label>-->
+<!--        <div class="layui-input-inline" style="width: 98px;">-->
+<!--          <input type="tel" name="width" value="1024" autocomplete="off" placeholder="width" class="layui-input demoSet">-->
+<!--        </div>-->
+<!--        <div class="layui-input-inline" style="width: 98px;">-->
+<!--          <input type="tel" name="height" value="768" autocomplete="off" placeholder="height" class="layui-input demoSet">-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+
+    <!--    切换-->
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">自动切换</label>
+        <div class="layui-input-block">
+          <input type="checkbox" name="switch" lay-skin="switch" checked="" lay-text="ON|OFF" lay-filter="autoplay">
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label" style="width: auto;">时间间隔</label>
+        <div class="layui-input-inline" style="width: 120px;">
+          <input type="tel" name="interval" value="10000" autocomplete="off" placeholder="毫秒" class="layui-input demoSet">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="layui-carousel" id="file_show">
+  <div carousel-item="" class="_file">
+<!--    <div class="box">-->
+<!--      <iframe src="pdfjs/web/viewer.html?file=../../pdfFile/文件管理系统-期规划.pdf" width="100%" height="900"></iframe>-->
+<!--&lt;!&ndash;      <a   href="jsPdf/web/viewer.html?file=pdfFile/人本集团-文件管理系统_2-1574216642958.pdf" class="pdfShow"></a>&ndash;&gt;-->
+<!--    </div>-->
+  </div>
+</div>
+
+<script src="js/jquery.cookie.js"></script>
+<script>
+
+
+
+  $(function() {
+
+    var berId = $.cookie('berId'),
+            dId = $.cookie('dId'),
+            lineId = $.cookie('lineId');
+
+
+    // console.log(berId,dId,lineId);
+    // var id = res.id,
+    //         lineId = res.lineId,
+    //         dId = res.dId;
+    $.get('/dis/file/getFileMessage', {berId:berId,lineId:lineId,dId:dId},        //为文件string的地址
+            function(res){
+              if(res.retCode == 200){
+                var filePdf = res.data;
+                // console.log(filePdf);
+                // var filePdf = new Array()
+                // for (var i = 0; i < res.data.length; i++) {      //遍历远程数据
+                //   // alert(res.data[i].id);
+                //   filePdf.push({
+                //     fileSrc: res.data[i]    //
+                //   });
+                // var filePdf=[
+                //     {
+                //         fileSrc:"'../pdfFile/刮色球检定规程.pdf'",
+                //     },{
+                //         fileSrc:"'../pdfFile/小超工序相关操作标准作业卡.pdf'",
+                //     },{
+                //         fileSrc:"'../pdfFile/设备故障上报作业指导书.pdf'",
+                //     }
+                // ];
+
+
+
+
+                var fileAppend = '';
+                $.each(filePdf,function(k,v){
+                  fileAppend += '<div class="box">';
+                  fileAppend +='<iframe src=' +'pdfjs/web/viewer.html?file=../..' + filePdf[k] + ' style="box-sizing: border-box;width: 100%;height: 100vh;" class="aa1"></iframe>';
+                  // fileAppend += '<a  href="jsPdf/web/viewer.html?' + filePdf[k] + '" class="pdfShow"></a>';
+                  fileAppend += '</div>';
+                  // console.dir('iframe .aa1');
+                });
+                $("._file").append(fileAppend);
+
+
+                //layui轮播引用
+                layui.use(['carousel', 'form'], function(){
+                  var carousel = layui.carousel
+                          ,form = layui.form;
+
+                  //轮播设置
+                  var ins3 = carousel.render({
+                    elem: '#file_show'
+                    ,full:true
+                    ,interval: 10000
+                    ,anim:'fade'
+                    ,arrow:'always'
+                    // ,autoplay:false
+
+                  });
+
+
+                  //轮播监听
+                  form.on('switch(autoplay)', function(){
+                    ins3.reload({
+                      autoplay: this.checked
+                    });
+                  });
+
+                  //设置大小
+                  $('.demoSet').on('keyup', function(){
+                    var value = this.value
+                            ,options = {};
+                    if(!/^\d+$/.test(value)) return;
+
+                    options[this.name] = value;
+                    ins3.reload(options);
+                  });
+
+
+                });
+              }
+
+              // }
+            }
+    );
+
+  });
+
+
+
+</script>
+
+</body>
+</html>

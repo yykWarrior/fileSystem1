@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+
+
+    <title>文件管理系统</title>
+    <link rel="shortcut icon" type="image/x-icon" href="image/C&U.jpg" />
+    <link rel="stylesheet" href="css/homestyle.css">
+    <link rel="stylesheet" href="layui/css/layui.css">
+<!--    <script src="js/jquery.min.js"></script>-->
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/layDate/laydate.js"></script>
+    <script src="layui/layui.js"></script>
+<!--    <script src="layer-v3.1.1/layer/layer.js"></script>-->
+
+    <script src="js/newHome.js"></script>
+    <script src="js/line.js"></script>
+<!--    <script src="js/device.js"></script>-->
+    <script src="js/device.js"></script>
+    <script src="js/file.js"></script>
+    <script src="js/record.js"></script>
+    <script src="js/account.js"></script>
+
+
+    <style>
+
+        /*隐藏块*/
+        #line,#equipment,#document,#record,#other,#library,#account,#information,
+        #teamManagement
+        {
+            display:none;
+        }
+
+        input[type=text], select,input[type=file]
+        {
+            box-sizing: border-box;
+            width: 65%;
+            padding: 10px 15px;
+            margin: 3px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+
+
+
+</head>
+<body>
+<p style="user-select: none;font-font: '隶书';font-size:25px;color:honeydew;margin: auto;position: relative"><i>现场文件发放/回收管理系统</i></p>
+<img src="image/C&U2.png" width="20px" height="30px" style="position: absolute;right: 10px;top:-1px"/>
+<!--顶部导航栏-->
+<form>
+    <ul class="topmenu">
+        <li class='liCa' id="homemenu">主页</li>
+        <li class='liCa' id="accountmenu">人员管理</li>
+        <li class='liCa' id="librarymenu">文件库</li>
+        <li class='liCa' id="informationmenu">相关信息</li>
+        <li style="float:right;" class="escape" id="logOut">退出</li>
+    </ul>
+</form>
+<!--登出-->
+<script>
+
+    layui.use('layer',function (layer) {
+        var layer = layui.layer;
+        $('#logOut').click(function () {
+            $.post('/dis/user/doLogOut',{},function (res) {
+                if(res.retCode === 200){
+                    window.location.href='/dis/login.html'
+                }else {
+                    layer.msg('注销失败')
+                }
+            })
+        })
+    });
+
+</script>
+
+<!--//文件管理模块-->
+<div id="allcontent" class="center">
+
+    <!--    侧边导航栏-->
+    <div id="sidemenu" class="column sidemenu">
+        <ul>
+            <li id="linemenu">线位管理</li>
+            <li id="equipmentmenu">设备管理</li>
+            <li id="documentmenu">文件管理</li>
+            <li id="recordmenu">发放记录</li>
+            <li id="othermenu">其他</li>
+        </ul>
+    </div>
+
+    <!-- 主页管理主要代码区 -->
+    <div id="home" class="column content">
+        <div class="header">
+            <h3 style="font-size: 25px">介绍</h3>
+        </div>
+        <div style="margin:auto;height:100%;padding:2%">
+            <table class="content1" border='1' align='center' style="width:80%;height:60%;user-select: none;line-height: 22px">
+                <tr>
+                    <td style="box-sizing: border-box;background-color: white;font-size: 15px;border:1px solid white;">
+                        <h4 style="box-sizing:border-box;font-size:18px;padding-left:15px">一.目的</h4>
+                        <ol style="box-sizing:border-box;font-size:15px;padding-left:30px">
+                            <li>使公司资料使用更安全，方便，版本控制更精准</li>
+                            <li>提高公司员工工作效率，减少员工重复工作量</li>
+                            <li>降低人力成本，财务预算。推进质量管理体系理念落实</li>
+                        </ol>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="box-sizing: border-box;background-color: white;font-size: 15px;border:1px solid white;">
+                        <h4 style="box-sizing:border-box;font-size:18px;padding-left:15px">二.范围</h4>
+                        <ol style="box-sizing:border-box;font-size:15px;padding-left:30px">
+                            <li>该系统目前仅针对现场文件发放/回收及文件管理，包括生产派单所需的工艺卡，及其他作业文件</li>
+                            <li>管理员：对整个系统进行管理，包括初期的文件上传、每日的文件发放，及现场账号管理</li>
+                            <li>现场人员：针对现场生产时文件进行选择查看</li>
+                        </ol>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="box-sizing: border-box;background-color: white;font-size: 15px;border:1px solid white;">
+                        <h4 style="box-sizing:border-box;font-size:18px;padding-left:15px">三.基本功能</h4>
+                        <ol style="box-sizing:border-box;font-size:15px;padding-left:30px">
+                            <li>设置公司内部对应产线、设备、型号</li>
+                            <li>针对以上要求对应上传相关文件</li>
+                            <li>创建现场操作人员账号，并给予查看某一条或两条线的权力</li>
+                            <li>现场人员通过移动端浏览器（pc端也可），选择设备和型号查看相关文件。</li>
+                        </ol>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="box-sizing: border-box;background-color: white;font-size: 15px;border:1px solid white;">
+                        <h4 style="box-sizing:border-box;font-size:18px;padding-left:15px">四.蓝图</h4>
+                        <ol style="box-sizing:border-box;font-size:15px;padding-left:30px">
+                            <li>发展为全公司的文件管理系统</li>
+                            <li>增加现场设备、记录点检功能</li>
+                            <li>添加追溯功能</li>
+                        </ol>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- 线位管理主要代码区 -->
+    <div id="line" class="column content">
+        <div class="header">
+            <h3>线位管理</h3>
+        </div>
+
+        <div align="center" id="linetable" aria-relevant="additions">
+            <table id='line_table' lay-filter="line_table"></table>
+        </div>
+    </div>
+    <!--    产线表头按钮-->
+    <script type="text/html" id="linetitlebtn">
+        <div class="layui-btn-container" style="float: left;">
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="add"><i class="layui-icon">&#xe608;</i>添加</button>
+            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete"><i class="layui-icon">&#xe640;</i>删除</button>
+            <a class="layui-btn layui-btn-sm" lay-event="str_type"><i class='layui-icon'>&#xe641</i>发放</a>
+<!--            <a class="layui-btn layui-btn-sm" lay-event="str_type"><i class='layui-icon'>&#xe641</i>回收</a>-->
+        </div>
+        <div class="layui-btn-container" style="float: right;">
+            <input type="text" class="layui-slider-input-txt" id="linename" name="linename"  style="height: 30px;width:200px;margin: 0;padding:auto"  placeholder="请输入线名称"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="ser" id="do_search">搜索</button>
+        </div>
+    </script>
+<!--    产线表格内按钮1-->
+    <script type="text/html" id="optline1">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">型号</a>
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail10">设备</a>
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail12">文件</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+<!--    产线表格内按钮2-->
+    <script type="text/html" id="linefill">
+        <a class="layui-btn layui-btn-normal layui-btn-xs addtype" lay-event="add_mod">添加型号</a>
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="add_equip">添加设备</a>
+    </script>
+
+<!--    产线表格内按钮3-->
+    <script type="text/html" id="moddistr">
+        <a class="layui-btn layui-btn-xs" lay-event="str_type">分配</a>
+    </script>
+
+<!--    型号管理-->
+<!--    <script type="text/html" id="optype1">-->
+<!--        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del1">删除</a>-->
+<!--    </script>-->
+<!-- 产线-型号管理表头 -->
+    <script type="text/html" id="typetitlebtn">
+        <div class="layui-btn-container" style="float: left;">
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="add4"><i class="layui-icon">&#xe608;</i>添加</button>
+<!--            <input class="layui-slider-input-txt" style="height: 30px;width:200px;margin: 0;padding:auto" id="date"/>-->
+<!--            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>-->
+<!--            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="dis">分配</button>-->
+            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete4"><i class="layui-icon">&#xe640;</i>删除</button>
+        </div>
+        <div class="layui-btn-container" style="float: right;">
+            <input type="text" class="layui-slider-input-txt" id="modename" name="modename"  style="height: 30px;width:150px;margin: 0;padding:auto"  placeholder="请输入轴承类型"/>
+            <a class="layui-slider-input-txt">&nbsp;</a>
+            <input type="text" class="layui-slider-input-txt" id="typename" name="typename"  style="height: 30px;width:150px;margin: 0;padding:auto"  placeholder="请输入轴承型号"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="ser4">搜索</button>
+        </div>
+    </script>
+    <!--    产线-设备表头内按钮-->
+    <script type="text/html" id="deviceTitleBtn1">
+        <div class="layui-btn-container" style="float: left;">
+            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete11"><i class="layui-icon">&#xe640;</i>删除</button>
+        </div>
+    </script>
+    <!--    产线-文件表头内按钮-->
+    <script type="text/html" id="fileTitleBtn1">
+        <div class="layui-btn-container" style="float: left;">
+            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete12"><i class="layui-icon">&#xe640;</i>删除关系</button>
+        </div>
+    </script>
+    <!--    产线-记录表头内按钮-->
+    <script type="text/html" id="recordTitleBtn1">
+        <div class="layui-btn-container" style="float: right;">
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <input type="text" class="layui-slider-input-txt" id="beartype1" name="beartype1"  style="height: 30px;width:100px;margin: 0;padding:auto"  placeholder="轴承型号"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <input type="text" class="layui-slider-input-txt" id="dename1" name="dename1"  style="height: 30px;width:100px;margin: 0;padding:auto"  placeholder="工序名"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="ser312" >搜索</button>
+        </div>
+    </script>
+    <!--    产线-记录表内内按钮-->
+    <script type="text/html" id="recordInnerBtn1">
+            <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="recycle1">回收</button>
+    </script>
+
+    <!-- 设备管理主要代码区 -->
+    <div id="equipment" class="column content">
+        <div class="header">
+            <h3>设备管理</h3>
+        </div>
+        <div align="center" id="devicetable" aria-relevant="additions">
+            <table id='device_table' lay-filter="device_on"></table>
+        </div>
+
+    </div>
+
+<!--    操作行内按钮-->
+    <script type="text/html" id="optdevicebtn">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del1">删除</a>
+    </script>
+<!--    表头内按钮-->
+    <script type="text/html" id="devicetitlebtn">
+        <div class="layui-btn-container" style="float: left;">
+            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete1"><i class="layui-icon">&#xe640;</i>删除</button>
+        </div>
+        <div class="layui-btn-container" style="float: right;">
+<!--            <select id="lineChose" class="layui-slider-input-txt" xm-select="lineChose" xm-select-search-type="dl" xm-select-direction="down" style="height: 30px;width:200px;margin: 0;padding:auto" lay-event="choLine"></select>-->
+            <input type="text" class="layui-slider-input-txt" id="byLine" name="byLine"  style="height: 30px;width:150px;margin: 0;padding:auto"  placeholder="请输入生产线"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <input type="text" class="layui-slider-input-txt" id="processname" name="processname"  style="height: 30px;width:150px;margin: 0;padding:auto"  placeholder="请输入工序名称"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <input type="text" class="layui-slider-input-txt" id="devicename" name="devicename"  style="height: 30px;width:150px;margin: 0;padding:auto"  placeholder="请输入设备名称"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="ser1" >搜索</button>
+        </div>
+    </script>
+<!--    <script src="layui-formSelects-master/src/formSelects-v4.js" ></script>-->
+<!--    <link rel="stylesheet" href="layui-formSelects-master/dist/formSelects-v4.css">-->
+
+    <!--    文件管理主要代码区-->
+    <div id="document" class="column content">
+        <div class="header">
+            <h3>文件管理</h3>
+
+        </div>
+        <div align="center" id="filetable" aria-relevant="additions">
+            <table id='file_table' lay-filter="file_on"></table>
+        </div>
+        <label for = 'xunJieWeb'>推荐在线文件转pdf网址：</label>
+        <a href="https://app.xunjiepdf.com/jpg2pdf/" id="xunJieWeb" TARGET="_blank">迅捷pdf</a>
+    </div>
+
+<!--    文件管理表格头部按钮-->
+    <script type="text/html" id="filetitlebtn">
+        <div class="layui-btn-container" style="float: left;">
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="add2"><i class="layui-icon">&#xe608;</i>上传文件</button>
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="mod2" ><i class="layui-icon">&#xe642;</i>信息修改</button>
+            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete2"><i class="layui-icon">&#xe640;</i>删除</button>
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="def2" id="def2"> <i class="layui-icon">&#x1002;</i>属性定义</button>
+        </div>
+        <div class="layui-btn-container" style="float: right;">
+            <input type="text" class="layui-slider-input-txt" id="filNam" name="fileName"  style="height: 30px;width:150px;margin: 0;padding:auto"  placeholder="文件名称"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <input type="text" class="layui-slider-input-txt" id="filNum" name="fileNumber"  style="height: 30px;width:150px;margin: 0;padding:auto"  placeholder="文件编号"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <input type="text" class="layui-slider-input-txt" id="verNum" name="versionNumber"  style="height: 30px;width:100px;margin: 0;padding:auto"  placeholder="版本号"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="ser2" >搜索</button>
+        </div>
+    </script>
+
+<!--    文件管理表格内按钮-->
+    <script type="text/html" id="optfilebtn">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail2">属性</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del2">删除</a>
+    </script>
+
+<!--    文件属性查看表头按钮-->
+    <script type="text/html" id="detailTitleBtn">
+        <div class="layui-btn-container" style="float: left;">
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="add5"><i class="layui-icon">&#xe608;</i>增加属性</button>
+            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete5"><i class="layui-icon">&#xe640;</i>删除</button>
+        </div>
+        <div class="layui-btn-container" style="float: right;">
+            <input type="text" class="layui-slider-input-txt" id="type1Name" name="typeName"  style="height: 30px;width:150px;margin: 0;padding:auto"  placeholder="请输入型号名"/>
+            <a class="layui-slider-input-txt">&nbsp;</a>
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="ser5">搜索</button>
+        </div>
+    </script>
+
+
+
+
+
+
+
+    <!--    发放记录主要代码区-->
+    <div id="record" class="column content">
+        <div class="header">
+            <h3>发放记录</h3>
+        </div>
+        <div align="center" id="recordtable" aria-relevant="additions">
+            <table id='record_table' lay-filter="record_on"></table>
+        </div>
+    </div>
+
+<!--    发放记录行内按钮-->
+    <script type="text/html" id="recordoptbtn">
+        <a class="layui-btn layui-btn-normal layui-btn-xs layui-btn-disabled" lay-event="deltail3">查看</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del3" id="del3">删除</a>
+    </script>
+	
+<!--	发放记录表头按钮-->
+    <script type="text/html" id="recordtitlebtn">
+        <div class="layui-btn-container" style="float:left">
+            <div class="layui-btn-container" style="float: left;">
+                <button class="layui-btn layui-btn-primary layui-btn-sm record_delete" lay-event="delete3"><i class="layui-icon">&#xe640;</i>删除记录</button>
+            </div>
+            <div class="layui-btn-container" style="float: right;">
+                <a class="layui-slider-input-txt">&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                <input type="text" class="layui-slider-input-txt" id="dateser" name="dateser"  style="height: 30px;width:300px;margin: 0;padding:auto"  placeholder="请选择文件发放时间"/>
+                <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+                <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="ser3" >搜索</button>
+            </div>
+        </div>
+        <div class="layui-btn-container" style="float: right;">
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;&nbsp;&nbsp;</a>
+            <input type="text" class="layui-slider-input-txt" id="proline" name="proline"  style="height: 30px;width:100px;margin: 0;padding:auto"  placeholder="生产线"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <input type="text" class="layui-slider-input-txt" id="beartype" name="beartype"  style="height: 30px;width:100px;margin: 0;padding:auto"  placeholder="轴承型号"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <input type="text" class="layui-slider-input-txt" id="dename" name="dename"  style="height: 30px;width:100px;margin: 0;padding:auto"  placeholder="工序名"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="ser31" >搜索</button>
+        </div>
+    </script>
+
+
+
+
+    <!--   暂未开放区域-->
+    <div id="other" class="column content">
+        <div style="margin:auto;height:100%;padding:10%">
+            <table class="content1" border='1' align='center' style="width:80%;height:60%;">
+                <tr style="padding:10px;">
+                    <th align='center'>暂未开发</th>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+
+<!--账号管理模块-->
+<div id="account" class="center" style="height:800px;text-align:center">
+<!--        侧边导航栏-->
+    <div id="accountSideMenu" class="column sidemenu">
+        <ul>
+            <li id="teamMenu" class="layui-btn-disabled">生产团队管理</li>
+            <li id="siteAccountMenu" class="layui-btn-disabled">现场账号管理</li>
+            <li id="otherAccountMenu" class="layui-btn-disabled">二线账号管理</li>
+        </ul>
+    </div>
+
+<!--    团队管理表-->
+<!--    <div id="teamManagement" class="column content">-->
+<!--        <div class="header" style="position: relative;margin:auto">-->
+<!--            <h3>团队管理表</h3>-->
+<!--        </div>-->
+<!--        <div align="center" id="teamTable" aria-relevant="additions">-->
+<!--            <table id='team_table' lay-filter="team_on"></table>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    现场账号管理-->
+    <div id="siteAccount" class="column content" >
+        <div class="header" style="position: relative;margin:20px auto;">
+            <h3>现场账号管理</h3>
+        </div>
+
+        <div align="center" id="siteAccountTable" aria-relevant="additions">
+            <table id='siteAccount_table' lay-filter="siteAccount_on"></table>
+        </div>
+    </div>
+<!--    账号管理表头按钮-->
+    <!--    产线表头按钮-->
+    <script type="text/html" id="accountTableTitle">
+        <div class="layui-btn-container" style="float: left;">
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="add6"><i class="layui-icon">&#xe608;</i>添加</button>
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="mod6"><i class="layui-icon">&#xe642;</i>修改</button>
+            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete6"><i class="layui-icon">&#xe640;</i>删除</button>
+        </div>
+        <div class="layui-btn-container" style="float: right;">
+            <input type="text" class="layui-slider-input-txt" id="teamName" name="teamName"  style="height: 30px;width:100px;margin: 0;padding:auto"  placeholder="团队"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <input type="text" class="layui-slider-input-txt" id="areaName" name="areaName"  style="height: 30px;width:100px;margin: 0;padding:auto"  placeholder="区域"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <input type="text" class="layui-slider-input-txt" id="owner" name="owner"  style="height: 30px;width:100px;margin: 0;padding:auto"  placeholder="责任人"/>
+            <a class="layui-slider-input-txt">&nbsp;&nbsp;</a>
+            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="ser" id="searchAccount">搜索</button>
+        </div>
+    </script>
+    <!--    产线表格内按钮1-->
+    <script type="text/html" id="optAccount6">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del6">删除</a>
+    </script>
+
+</div>
+
+<div id="library" class="center" style="height:800px;">
+    <p style="margin:auto;text-align:center;line-height:800px">所有的文件都可以在这里查看</p>
+</div>
+<div id="information" class="center" style="height:800px;">
+    <p style="margin:auto;text-align:center;line-height:800px">系统的相关信息都会写在这里</p>
+</div>
+
+<div id="footer" class="footer">
+    <p>版权&copy; 人本集团企管部体系四团队.感谢layUI框架的支持</p>
+</div>
+
+
+</body>
+</html>
